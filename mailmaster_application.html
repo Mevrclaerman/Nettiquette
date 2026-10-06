@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="nl" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MailMaster: E-mail Etiquette & Digitale Vaardigheden</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#2563eb',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pop { animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Custom scrollbar for realistic email bodies */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate * {
+                visibility: visible;
+            }
+            #printable-certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none !important;
+                border: 4px solid #1e40af !important;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-800 bg-slate-100 min-h-screen flex flex-col">
+
+    <!-- TOP HEADER -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white text-xl font-black shadow-md shadow-brand-500/30">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-brand-600 to-indigo-600 bg-clip-text text-transparent">
+                        MailMaster
+                    </h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">E-mail Etiquette & Digitale Vaardigheden (1ste Middelbaar)</p>
+                </div>
+            </div>
+
+            <!-- Header Badges and Progress -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 flex items-center space-x-2">
+                    <i class="fa-solid fa-award text-amber-500 text-lg"></i>
+                    <span class="text-xs font-semibold text-slate-600 hidden md:inline">Badges:</span>
+                    <span id="header-badge-count" class="text-sm font-bold text-slate-800">0 / 5</span>
+                </div>
+                
+                <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 flex items-center space-x-2">
+                    <div class="w-16 bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="header-progress-bar" class="bg-brand-600 h-2.5 rounded-full w-0 transition-all duration-500"></div>
+                    </div>
+                    <span id="header-progress-text" class="text-xs font-bold text-brand-700">0%</span>
+                </div>
+
+                <button onclick="openResetModal()" title="Voortgang Wissen" class="p-2 text-slate-400 hover:text-red-500 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- TAB NAVIGATION BAR -->
+        <nav class="bg-slate-800 text-slate-300 overflow-x-auto scrollbar-none shadow-inner">
+            <div class="max-w-7xl mx-auto px-2 flex space-x-1 py-2 text-xs sm:text-sm font-medium whitespace-nowrap">
+                <button onclick="switchTab('theorie')" id="tab-btn-theorie" class="tab-btn active px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open"></i><span>1. Kennisbank</span>
+                </button>
+                <button onclick="switchTab('bouwer')" id="tab-btn-bouwer" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square"></i><span>2. E-mail Bouwer</span>
+                </button>
+                <button onclick="switchTab('postvak')" id="tab-btn-postvak" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-inbox"></i><span>3. Postvak IN</span>
+                </button>
+                <button onclick="switchTab('replyall')" id="tab-btn-replyall" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-reply-all"></i><span>4. Reply All Valkuil</span>
+                </button>
+                <button onclick="switchTab('bestanden')" id="tab-btn-bestanden" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-paperclip"></i><span>5. Bijlagen & Namen</span>
+                </button>
+                <button onclick="switchTab('matrix')" id="tab-btn-matrix" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-sliders"></i><span>6. Ontvanger-Matrix</span>
+                </button>
+                <button onclick="switchTab('puzzel')" id="tab-btn-puzzel" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-puzzle-piece"></i><span>7. Puzzel & Quiz</span>
+                </button>
+                <button onclick="switchTab('certificaat')" id="tab-btn-certificaat" class="tab-btn px-3 py-2 rounded-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-trophy text-amber-400"></i><span>8. Certificaat</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- MODULE 1: THEORIE & KENNISBANK -->
+        <section id="module-theorie" class="space-y-6">
+            <div class="bg-gradient-to-r from-brand-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
+                <div class="max-w-3xl">
+                    <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 1</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-2">📘 Theorie & E-mail Kennisbank</h2>
+                    <p class="text-brand-100 text-sm sm:text-base">
+                        Een e-mail is een digitaal briefje op school of het werk. Met de juiste onderdelen overtuig je leerkrachten, voorkom je misverstanden en bescherm je je eigen privacy!
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Aan / CC / BCC -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Aan, CC en BCC</h3>
+                    <ul class="text-sm space-y-2 text-slate-600">
+                        <li><strong class="text-slate-800">Aan:</strong> Voor wie de mail écht bedoeld is (moet reageren).</li>
+                        <li><strong class="text-slate-800">CC (Carbon Copy):</strong> Meelezers die enkel geïnformeerd worden.</li>
+                        <li><strong class="text-slate-800 text-purple-700">BCC (Blind Copy):</strong> Onzichtbare ontvangers. Gebruik dit voor grote groepen om e-mailadressen te beschermen!</li>
+                    </ul>
+                </div>
+
+                <!-- Het Onderwerp -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-heading"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Het Onderwerp (Subject)</h3>
+                    <p class="text-sm text-slate-600 mb-3">
+                        Vat je e-mail kort en krachtig samen in 3 tot 6 woorden.
+                    </p>
+                    <div class="text-xs bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1">
+                        <p class="text-red-500"><i class="fa-solid fa-xmark"></i> Fout: <em>"vraagje"</em> of <em>"hallo"</em></p>
+                        <p class="text-emerald-600 font-medium"><i class="fa-solid fa-check"></i> Goed: <em>"Vraag taak Frans - Emma Peeters 1A"</em></p>
+                    </div>
+                </div>
+
+                <!-- Aanspreking -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Aanspreking & Toon</h3>
+                    <p class="text-sm text-slate-600 mb-3">
+                        Pas je taalgebruik aan naargelang wie de mail leest.
+                    </p>
+                    <ul class="text-xs space-y-1.5 text-slate-600">
+                        <li><strong class="text-slate-800">Formeel (Leerkracht/Directie):</strong> <em>"Beste meneer Janssens,"</em> of <em>"Geachte mevrouw,"</em> + gebruik <strong>'U'</strong>.</li>
+                        <li><strong class="text-slate-800">Informeel (Klasgenoot):</strong> <em>"Hey Lucas,"</em> of <em>"Dag Sarah,"</em>.</li>
+                    </ul>
+                </div>
+
+                <!-- Inhoud & Opbouw -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-align-left"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Inhoud & Structuur</h3>
+                    <p class="text-sm text-slate-600 mb-2">
+                        Verdeel je mail in heldere alinea's:
+                    </p>
+                    <ol class="text-xs text-slate-600 list-decimal list-inside space-y-1">
+                        <li><strong>Inleiding:</strong> Waarom schrijf je deze mail?</li>
+                        <li><strong>Kern:</strong> Je vraag, uitleg of opmerking.</li>
+                        <li><strong>Slotzin:</strong> <em>"Alvast bedankt voor uw reactie."</em></li>
+                    </ol>
+                </div>
+
+                <!-- Bestandsnamen -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Officiële Bestandsnorm</h3>
+                    <p class="text-sm text-slate-600 mb-2">
+                        Sla je bestanden altijd op volgens de unieke schoolcode:
+                    </p>
+                    <div class="bg-slate-900 text-emerald-400 font-mono text-xs p-3 rounded-lg border border-slate-800 text-center font-bold">
+                        Vak_VoornaamNaam_Klas_Taak.pdf
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">Voorbeeld: <code>Aardrijkskunde_EmmaPeeters_1B_Klimaat.pdf</code></p>
+                </div>
+
+                <!-- Phishing & Veiligheid -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-lg mb-2">Phishing Herkennen</h3>
+                    <p class="text-sm text-slate-600 mb-2">
+                        Pas op voor valse e-mails die je wachtwoord willen stelen!
+                    </p>
+                    <ul class="text-xs text-slate-600 space-y-1">
+                        <li>⚠️ Dringende taal (<em>"Account geblokkeerd binnen 1 uur!"</em>)</li>
+                        <li>⚠️ Vreemd afzenderadres (bv. <code>admin@school-update123.com</code>)</li>
+                        <li>⚠️ Vragen naar je wachtwoord of geheime code.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: E-MAIL BOUWER & LIVE CHECKER -->
+        <section id="module-bouwer" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-600 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 2</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">✍️ E-mail Bouwer & Live Checker</h2>
+                <p class="text-brand-100 text-sm">Opstel-editor met slimme realtime kwaliteitscontrole.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- FORM INPUTS (Left Col) -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-lg border-b pb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-sliders text-brand-600 mr-2"></i>E-mail Gegevens</span>
+                        <span class="text-xs text-slate-400 font-normal">* Verplichte velden</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Aan (Ontvanger) *</label>
+                            <input type="text" id="builder-aan" oninput="analyzeEmail()" placeholder="bv. m.de.smet@school.be"
+                                   class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">CC (Meelezer - optioneel)</label>
+                            <input type="text" id="builder-cc" oninput="analyzeEmail()" placeholder="bv. titularis@school.be"
+                                   class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Onderwerp (Subject) *</label>
+                        <input type="text" id="builder-onderwerp" oninput="analyzeEmail()" placeholder="bv. Vraag over taak Wiskunde hoofdstuk 3"
+                               class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Formele Aanspreking *</label>
+                            <select id="builder-aanspreking" onchange="analyzeEmail()" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="">-- Kies aanspreking --</option>
+                                <option value="Beste mevrouw Jacobs,">Beste mevrouw Jacobs,</option>
+                                <option value="Geachte heer De Smet,">Geachte heer De Smet,</option>
+                                <option value="Dag meneer,">Dag meneer,</option>
+                                <option value="Hey leerkracht,">Hey leerkracht,</option>
+                                <option value="Yo De Smet!">Yo De Smet!</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Formele Afsluiting *</label>
+                            <select id="builder-afsluiting" onchange="analyzeEmail()" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="">-- Kies afsluiting --</option>
+                                <option value="Met vriendelijke groeten,">Met vriendelijke groeten,</option>
+                                <option value="Alvast bedankt en vriendelijke groet,">Alvast bedankt en vriendelijke groet,</option>
+                                <option value="Groetjes,">Groetjes,</option>
+                                <option value="Doeiii,">Doeiii,</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Inhoud van het Bericht *</label>
+                        <textarea id="builder-bericht" rows="5" oninput="analyzeEmail()" placeholder="Schrijf hier je duidelijke en beleefde e-mail..."
+                                  class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jouw Naam *</label>
+                            <input type="text" id="builder-naam" oninput="analyzeEmail()" placeholder="bv. Emma Peeters"
+                                   class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jouw Klas *</label>
+                            <input type="text" id="builder-klas" oninput="analyzeEmail()" placeholder="bv. 1A"
+                                   class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Bijlage Selecteren</label>
+                            <select id="builder-bijlage" onchange="analyzeEmail()" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="geen">Geen bijlage</option>
+                                <option value="Wiskunde_EmmaPeeters_1A_Huiswerk.pdf">Wiskunde_EmmaPeeters_1A_Huiswerk.pdf</option>
+                                <option value="taak1.docx">taak1.docx</option>
+                                <option value="foto_huiswerk.jpg">foto_huiswerk.jpg</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="submitBuilderEmail()" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md shadow-brand-500/20 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>E-mail Versturen & Score Valideren</span>
+                    </button>
+                </div>
+
+                <!-- LIVE PREVIEW & SCORE (Right Col) -->
+                <div class="lg:col-span-5 space-y-6">
+                    <!-- Realtime Score Indicator -->
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-bold text-slate-700">Kwaliteitsscore:</span>
+                            <span id="builder-score-num" class="text-2xl font-black text-brand-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div id="builder-score-bar" class="h-3 rounded-full bg-slate-300 w-0 transition-all duration-300"></div>
+                        </div>
+
+                        <!-- Feedback Alerts -->
+                        <div id="builder-feedback-list" class="mt-4 space-y-2 text-xs">
+                            <div class="p-2.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 flex items-center space-x-2">
+                                <i class="fa-solid fa-circle-info text-amber-600"></i>
+                                <span>Vul de verplichte velden in om de analyse te starten.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Email Preview Card -->
+                    <div class="bg-slate-900 text-slate-100 rounded-2xl p-5 shadow-xl border border-slate-800">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            </div>
+                            <span class="text-xs text-slate-400 font-mono"><i class="fa-solid fa-eye mr-1"></i>Live Voorbeeld</span>
+                        </div>
+
+                        <div class="space-y-2 text-xs font-mono">
+                            <p class="text-slate-400"><strong class="text-slate-200">Aan:</strong> <span id="prev-aan" class="text-slate-300">(Nog leeg)</span></p>
+                            <p class="text-slate-400" id="prev-cc-row"><strong class="text-slate-200">CC:</strong> <span id="prev-cc" class="text-slate-300">-</span></p>
+                            <p class="text-slate-400 border-b border-slate-800 pb-2"><strong class="text-slate-200">Onderwerp:</strong> <span id="prev-onderwerp" class="text-amber-400 font-bold">(Geen onderwerp)</span></p>
+                            
+                            <div id="prev-attachment-box" class="hidden py-1 px-2 bg-slate-800 rounded border border-slate-700 text-emerald-400 text-xs inline-flex items-center space-x-1">
+                                <i class="fa-solid fa-paperclip"></i>
+                                <span id="prev-bijlage-name"></span>
+                            </div>
+
+                            <div class="pt-3 font-sans text-sm text-slate-200 leading-relaxed whitespace-pre-wrap min-h-[140px]" id="prev-body-content">
+<span class="text-slate-500 italic">Hier verschijnt je e-mailvoorbeeld zodra je begint met typen...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: POSTVAK IN SIMULATOR -->
+        <section id="module-postvak" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 3</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">📬 Postvak IN Simulator</h2>
+                <p class="text-emerald-100 text-sm">Los 4 realistische schoolscenario's correct op.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[500px]">
+                <!-- Email List Sidebar -->
+                <div class="md:col-span-5 lg:col-span-4 border-r border-slate-200 bg-slate-50">
+                    <div class="p-4 border-b border-slate-200 font-bold text-slate-700 flex justify-between items-center">
+                        <span><i class="fa-solid fa-inbox text-emerald-600 mr-2"></i>Inkomende Mails</span>
+                        <span id="inbox-solved-counter" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">0 / 4 voltooid</span>
+                    </div>
+                    <div class="divide-y divide-slate-200" id="inbox-email-list">
+                        <!-- Dynamically populated emails -->
+                    </div>
+                </div>
+
+                <!-- Email Detail View -->
+                <div class="md:col-span-7 lg:col-span-8 p-6 flex flex-col justify-between bg-white" id="inbox-mail-detail">
+                    <!-- Default State -->
+                    <div class="text-center py-20 text-slate-400 space-y-3">
+                        <i class="fa-solid fa-envelope-open text-5xl"></i>
+                        <p class="text-sm">Selecteer een e-mail uit de lijst om te lezen en te beantwoorden.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: REPLY ALL VALKUIL -->
+        <section id="module-replyall" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-rose-600 to-red-700 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 4</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">🚨 "Allen Beantwoorden" Valkuil</h2>
+                <p class="text-rose-100 text-sm">Ervaar de chaos van ondoordacht e-mailen naar grote groepen.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <!-- Situation Description -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-start space-x-4">
+                    <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex-shrink-0 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Situatie: Schoolbrede Mededeling</h3>
+                        <p class="text-sm text-slate-600 mt-1">
+                            Mevrouw De Smet (ICT-coördinator) stuurt een e-mail naar <strong>alle 180 leerlingen van het 1ste middelbaar</strong>:
+                        </p>
+                        <div class="mt-3 bg-white p-3 rounded-lg border border-slate-300 font-mono text-xs text-slate-700">
+                            <strong>Aan:</strong> leerlingen1ste@school.be (180 ontvangers)<br>
+                            <strong>Onderwerp:</strong> Fietssleutel gevonden op speelplaats<br><br>
+                            <em>"Beste leerlingen, er is vanmorgen een zwarte fietssleutel gevonden. Ligt de jouwe nog op zak?"</em>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Question -->
+                <div>
+                    <h4 class="font-bold text-slate-800 mb-3 text-center text-base">De sleutel is NIET van jou. Wat doe je?</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="triggerReplyAllChaos('wrong1')" class="p-4 rounded-xl border-2 border-red-200 hover:border-red-500 bg-red-50/50 hover:bg-red-50 text-left transition space-y-2 group">
+                            <span class="font-bold text-red-700 text-sm block group-hover:translate-x-1 transition-transform">
+                                🔴 "Allen Beantwoorden"
+                            </span>
+                            <p class="text-xs text-slate-600">
+                                Je typt: <em>"Niet van mij hoor!"</em> en verstuurt naar iedereen.
+                            </p>
+                        </button>
+
+                        <button onclick="triggerReplyAllChaos('wrong2')" class="p-4 rounded-xl border-2 border-red-200 hover:border-red-500 bg-red-50/50 hover:bg-red-50 text-left transition space-y-2 group">
+                            <span class="font-bold text-red-700 text-sm block group-hover:translate-x-1 transition-transform">
+                                🔴 "Allen Beantwoorden"
+                            </span>
+                            <p class="text-xs text-slate-600">
+                                Je typt: <em>"Ik ben mijn sleutel ook kwijt, maar hij is blauw!"</em>
+                            </p>
+                        </button>
+
+                        <button onclick="triggerReplyAllChaos('correct')" class="p-4 rounded-xl border-2 border-emerald-200 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 text-left transition space-y-2 group">
+                            <span class="font-bold text-emerald-700 text-sm block group-hover:translate-x-1 transition-transform">
+                                🟢 Niet reageren (of enkel afzender)
+                            </span>
+                            <p class="text-xs text-slate-600">
+                                Aangezien hij niet van jou is, reageer je niet. (Is hij wel van jou? Reply ENKEL naar Mevr. De Smet).
+                            </p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Simulation Canvas / Display Container -->
+                <div id="replyall-simulation-container" class="relative bg-slate-900 rounded-2xl p-6 min-h-[220px] flex items-center justify-center overflow-hidden border border-slate-800 text-center">
+                    <div id="replyall-default-msg" class="text-slate-400 text-sm">
+                        <i class="fa-solid fa-arrows-spin text-3xl mb-2 text-slate-600 block animate-spin"></i>
+                        Maak hierboven een keuze om het resultaat in de mailbox te zien.
+                    </div>
+
+                    <!-- Animated Spam Stream (Hidden initially) -->
+                    <div id="replyall-spam-box" class="hidden w-full space-y-2">
+                        <div class="flex items-center justify-between text-red-400 font-bold text-sm mb-2">
+                            <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> SPAMSTORM INBOX CHAOS!</span>
+                            <span id="replyall-counter" class="bg-red-600 text-white text-xs px-2 py-0.5 rounded-full font-mono">180 mails ontvangen</span>
+                        </div>
+                        <div id="replyall-messages-stream" class="space-y-1.5 max-h-[160px] overflow-y-auto text-left text-xs font-mono">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 5: BIJLAGEN & BESTANDSNAMEN -->
+        <section id="module-bestanden" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 5</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">📎 Bijlagen & Bestandsnamen Simulator</h2>
+                <p class="text-indigo-100 text-sm">Oefen het correct benoemen van schoolbestanden.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Generator Builder -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base border-b pb-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-indigo-600 mr-2"></i>1. Bestandsnaam Generator
+                    </h3>
+                    <p class="text-xs text-slate-500">Schoolnorm: <code>Vak_VoornaamNaam_Klas_Taak.pdf</code></p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Vak</label>
+                            <input type="text" id="fn-vak" oninput="updateFilenameGenerator()" placeholder="bv. Frans" class="w-full text-sm px-3 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Voornaam + Naam</label>
+                            <input type="text" id="fn-naam" oninput="updateFilenameGenerator()" placeholder="bv. EmmaPeeters" class="w-full text-sm px-3 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Klas</label>
+                            <input type="text" id="fn-klas" oninput="updateFilenameGenerator()" placeholder="bv. 1A" class="w-full text-sm px-3 py-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Taaknaam</label>
+                            <input type="text" id="fn-taak" oninput="updateFilenameGenerator()" placeholder="bv. VocabulaireH3" class="w-full text-sm px-3 py-2 border rounded-lg">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded-xl text-center space-y-1">
+                        <span class="text-xs text-slate-400 block font-mono">Gegenereerde Bestandsnaam:</span>
+                        <div id="fn-generated-output" class="text-emerald-400 font-mono font-bold text-sm sm:text-base break-all">
+                            Vak_VoornaamNaam_Klas_Taak.pdf
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fix bad filenames challenge -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base border-b pb-2">
+                        <i class="fa-solid fa-wrench text-amber-500 mr-2"></i>2. Foute Bestandsnamen Herstellen
+                    </h3>
+                    <p class="text-xs text-slate-600">Herstel onderstaande slordige bestandsnaam naar de officiële norm:</p>
+
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200 flex items-center justify-between">
+                        <span class="text-xs font-mono text-red-700"><i class="fa-solid fa-file-circle-xmark mr-1"></i> taak_versie2_definitief(1).docx</span>
+                        <span class="text-xs text-red-500 font-semibold">Fout!</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Typ de gecorrigeerde bestandsnaam voor Wiskunde (Emma Peeters, Klas 1B, Taak Breuken):</label>
+                            <input type="text" id="fn-fix-input" placeholder="bv. Wiskunde_EmmaPeeters_1B_Breuken.pdf" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg">
+                        </div>
+                        <button onclick="checkFilenameFix()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition">
+                            Valideer Bestandsnaam
+                        </button>
+                        <div id="fn-fix-feedback" class="text-xs min-h-[20px]"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: ONTVANGER-MATRIX -->
+        <section id="module-matrix" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 6</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">🎚️ Ontvanger-Matrix (Toon & Aanspreking)</h2>
+                <p class="text-amber-100 text-sm">Koppel de gepaste aanspreking, toon en afsluiting aan het juiste type ontvanger.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            <th class="py-3 px-3">Ontvanger</th>
+                            <th class="py-3 px-3">Aanspreking</th>
+                            <th class="py-3 px-3">Aanspreekvorm</th>
+                            <th class="py-3 px-3">Afsluiting</th>
+                            <th class="py-3 px-3 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-xs sm:text-sm">
+                        <!-- Directie -->
+                        <tr>
+                            <td class="py-4 px-3 font-bold text-slate-800">
+                                <i class="fa-solid fa-user-tie mr-2 text-indigo-600"></i>Directie
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-ans-directie" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="fout">Hey mevrouw,</option>
+                                    <option value="goed">Geachte mevrouw de directeur,</option>
+                                    <option value="fout">Dag directie,</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-toon-directie" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="goed">U / Uw (Formeel)</option>
+                                    <option value="fout">Je / Jouw (Informeel)</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-afs-directie" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="goed">Met hoogachting,</option>
+                                    <option value="fout">Groetjes,</option>
+                                    <option value="fout">Doeiii!</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3 text-center" id="mat-res-directie">-</td>
+                        </tr>
+
+                        <!-- Titularis -->
+                        <tr>
+                            <td class="py-4 px-3 font-bold text-slate-800">
+                                <i class="fa-solid fa-chalkboard-user mr-2 text-emerald-600"></i>Titularis
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-ans-titularis" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="goed">Beste mevrouw Jacobs,</option>
+                                    <option value="fout">Yo leerkracht,</option>
+                                    <option value="fout">Geachte heer de Koning van de Klas,</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-toon-titularis" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="fout">Je / Jouw</option>
+                                    <option value="goed">U / Uw</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-afs-titularis" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="fout">Tot later gast!</option>
+                                    <option value="goed">Met vriendelijke groeten,</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3 text-center" id="mat-res-titularis">-</td>
+                        </tr>
+
+                        <!-- Klasgenoot -->
+                        <tr>
+                            <td class="py-4 px-3 font-bold text-slate-800">
+                                <i class="fa-solid fa-user-group mr-2 text-blue-600"></i>Klasgenoot
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-ans-klasgenoot" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="fout">Geachte heer Lucas Peeters,</option>
+                                    <option value="goed">Hey Lucas,</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-toon-klasgenoot" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="goed">Je / Jouw</option>
+                                    <option value="fout">U / Uw</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3">
+                                <select id="mat-afs-klasgenoot" class="border rounded px-2 py-1 text-xs w-full">
+                                    <option value="goed">Groetjes / Tot morgen,</option>
+                                    <option value="fout">Hoogachtend,</option>
+                                </select>
+                            </td>
+                            <td class="py-4 px-3 text-center" id="mat-res-klasgenoot">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mt-6 flex justify-end">
+                    <button onclick="checkMatrixAnswers()" class="py-2.5 px-6 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition">
+                        Controleer Matrix
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 7: PUZZEL & QUICK QUIZ -->
+        <section id="module-puzzel" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 7</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">🧩 Volgorde-Puzzel & Quick Quiz</h2>
+                <p class="text-purple-100 text-sm">Test je kennis over e-mailopbouw en etiquette.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Part A: Puzzle -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base border-b pb-2">
+                        <i class="fa-solid fa-list-ol text-purple-600 mr-2"></i>1. E-mail Opbouw Puzzel
+                    </h3>
+                    <p class="text-xs text-slate-600">Zet de 5 onderdelen van een e-mail in de juiste volgorde (van boven naar onder):</p>
+
+                    <div id="puzzle-items-container" class="space-y-2">
+                        <!-- Injected dynamically for click/reorder -->
+                    </div>
+
+                    <button onclick="checkPuzzleOrder()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition">
+                        Controleer Volgorde
+                    </button>
+                    <div id="puzzle-feedback" class="text-xs font-semibold min-h-[20px]"></div>
+                </div>
+
+                <!-- Part B: Quiz -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 text-base border-b pb-2">
+                        <i class="fa-solid fa-circle-question text-pink-600 mr-2"></i>2. E-mail Etiquette Quiz (5 Vragen)
+                    </h3>
+
+                    <div id="quiz-questions-container" class="space-y-4 text-xs">
+                        <!-- Injected via JS -->
+                    </div>
+
+                    <button onclick="checkQuizAnswers()" class="w-full py-2.5 bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs rounded-xl transition">
+                        Dien Quiz In
+                    </button>
+                    <div id="quiz-feedback" class="text-xs font-semibold min-h-[20px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 8: GAMIFICATIE & CERTIFICAAT -->
+        <section id="module-certificaat" class="hidden space-y-6">
+            <div class="bg-gradient-to-r from-amber-500 to-yellow-600 rounded-2xl p-6 text-white shadow-lg">
+                <span class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Module 8</span>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1">🏆 Gamificatie & Officieel Certificaat</h2>
+                <p class="text-amber-100 text-sm">Verzamel alle 5 badges om jouw officieel diplomacertificaat af te drukken.</p>
+            </div>
+
+            <!-- Badges Overview Shelf -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base border-b pb-2">Jouw Behaalde Badges</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="badges-shelf">
+                    <!-- Dynamic Badges -->
+                </div>
+            </div>
+
+            <!-- Printable Certificate Section -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <h3 class="font-bold text-slate-800 text-base border-b pb-2">MailMaster Certificaat Genereren</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Voornaam & Achternaam</label>
+                        <input type="text" id="cert-input-name" oninput="updateCertificatePreview()" placeholder="bv. Emma Peeters" class="w-full text-sm px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Klas</label>
+                        <input type="text" id="cert-input-class" oninput="updateCertificatePreview()" placeholder="bv. 1A" class="w-full text-sm px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+
+                <!-- Printable Certificate Preview Box -->
+                <div id="printable-certificate" class="bg-amber-50/40 border-8 border-double border-amber-600 rounded-2xl p-8 text-center space-y-4 shadow-inner relative max-w-3xl mx-auto my-4">
+                    <div class="flex justify-between items-center text-amber-700">
+                        <i class="fa-solid fa-award text-4xl"></i>
+                        <span class="text-xs font-bold uppercase tracking-widest font-mono">Officiële Bekroning</span>
+                        <i class="fa-solid fa-award text-4xl"></i>
+                    </div>
+
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">CERTIFICAAT VAN DIGITAL MASTER</h2>
+                    <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Dit certificaat wordt met trots uitgereikt aan</p>
+
+                    <div id="cert-display-name" class="text-2xl sm:text-3xl font-bold text-brand-700 underline decoration-amber-500 decoration-2 underline-offset-8">
+                        [ Vul jouw naam in ]
+                    </div>
+                    <div id="cert-display-class" class="text-sm font-semibold text-slate-600">
+                        Klas: [ Vul klas in ]
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+                        Heeft met succes alle modules voltooid van <strong>MailMaster: E-mail Etiquette & Digitale Vaardigheden</strong> en is officieel bekwaam in het professioneel, veilig en beleefd communiceren via e-mail.
+                    </p>
+
+                    <div class="pt-4 border-t border-amber-200 flex justify-between items-end text-xs text-slate-500">
+                        <div>
+                            <p class="font-bold text-slate-700">Datum:</p>
+                            <p id="cert-display-date">--/--/----</p>
+                        </div>
+                        <div class="text-center">
+                            <i class="fa-solid fa-signature text-2xl text-amber-600"></i>
+                            <p class="font-bold text-slate-700">MailMaster Academie</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button onclick="window.print()" class="py-3 px-8 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition flex items-center space-x-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Certificaat Afdrukken / Opslaan als PDF</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CUSTOM MODAL DIALOG -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl animate-pop space-y-4">
+            <div class="flex items-center space-x-3">
+                <div id="modal-icon-bg" class="w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl">
+                    <i id="modal-icon" class="fa-solid fa-circle-info"></i>
+                </div>
+                <h3 id="modal-title" class="font-bold text-lg text-slate-800">Melding</h3>
+            </div>
+            <p id="modal-message" class="text-sm text-slate-600 leading-relaxed"></p>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeCustomModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition">
+                    Begrepen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const APP_STATE = {
+            badges: {
+                privacy: false,    // Reply all scenario
+                attachment: false, // Filename challenge
+                precision: false,  // Email builder 85%+
+                inbox: false,      // All inbox solved
+                netiquette: false  // Quiz & Puzzle
+            },
+            solvedEmails: [false, false, false, false],
+            puzzleOrder: [
+                { id: 1, text: "Onderwerp (Korte samenvatting)" },
+                { id: 2, text: "Formele Aanspreking (bv. Beste mevrouw,)" },
+                { id: 3, text: "Inleiding & Kern (Vraag/uitleg)" },
+                { id: 4, text: "Slotzin (bv. Alvast bedankt)" },
+                { id: 5, text: "Afsluiting & Naam + Klas" }
+            ],
+            userPuzzleCurrent: []
+        };
+
+        const INBOX_DATA = [
+            {
+                id: 0,
+                sender: "Mr. Janssens (Directeur)",
+                email: "directie@school.be",
+                subject: "Toestemming overblijven middag",
+                preview: "Beste leerling, graag ontvang ik een bevestiging...",
+                body: "Beste leerling,\n\nGraag ontvang ik een korte bevestiging of je toestemming hebt van je ouders om tijdens de middagpauze de school te verlaten.\n\nMet vriendelijke groeten,\nMevr. Janssens\nDirectie",
+                options: [
+                    { text: "Geachte mevrouw Janssens, Mijn ouders geven toestemming. Met vriendelijke groeten, Emma Peeters (1A).", correct: true, feedback: "Perfect! Formeel, beleefd en met al jouw gegevens." },
+                    { text: "Yo directie, ja mag hoor van mijn mama. Doei!", correct: false, feedback: "Te informeel voor de directie!" }
+                ]
+            },
+            {
+                id: 1,
+                sender: "IT Schoolservice (VERDACHT)",
+                email: "admin@school-update99.com",
+                subject: "⚠️ DRINGEND: Account verloopt!",
+                preview: "Je schoolaccount wordt binnen 2 uur geblokkeerd...",
+                body: "Beste gebruiker,\n\nJe wachtwoord verloopt vandaag. Klik direct op onderstaande link om in te loggen en je wachtwoord te verifiëren:\nhttp://valse-link-school.com/login\n\nIT Support",
+                options: [
+                    { text: "🚨 Rapporteer als Phishing / Nep-mail", correct: true, feedback: "Uitstekend! Je hebt de verdachte link en afzender direct herkend." },
+                    { text: "Klik op de link en vul je wachtwoord in", correct: false, feedback: "Gevaarlijk! Dit is Phishing! Geef nooit zomaar je wachtwoord." }
+                ]
+            },
+            {
+                id: 2,
+                sender: "Liam (Klasgenoot)",
+                email: "liam.1a@school.be",
+                subject: "Groepswerk Geschiedenis",
+                preview: "Hey, wanneer spreken we af? Ik snap taak 2 niet...",
+                body: "Hey!\n\nWanneer zullen we samenwerken voor geschiedenis? Ik snap vraag 2 van het werkblad niet zo goed.\n\nGroetjes,\nLiam",
+                options: [
+                    { text: "Dag Liam, Zullen we morgen tijdens de pauze afspreken in de bib? Dan bekijken we vraag 2 samen! Groetjes, Emma", correct: true, feedback: "Top! Vriendelijk en constructief naar je klasgenoot." },
+                    { text: "Zoek het zelf uit man, ik heb geen tijd.", correct: false, feedback: "Niet erg beleefd naar een klasgenoot toe!" }
+                ]
+            },
+            {
+                id: 3,
+                sender: "Mevr. Jacobs (Leerkracht)",
+                email: "m.jacobs@school.be",
+                subject: "Geen bijlage bij taak Wiskunde",
+                preview: "Beste Emma, Ik ontving je mail maar er zit geen bestand bij...",
+                body: "Beste Emma,\n\nBedankt voor je e-mail. Ik zie dat je schreef dat de taak in bijlage zit, maar er is geen bestand meegeleverd.\n\nKan je dit alsnog sturen?\n\nMet vriendelijke groeten,\nMevr. Jacobs",
+                options: [
+                    { text: "Beste mevrouw Jacobs, Mijn excuses! In bijlage vindt u de juiste PDF: Wiskunde_EmmaPeeters_1A.pdf. Met vriendelijke groeten, Emma", correct: true, feedback: "Super! Beleefd hersteld én het bestand heeft de juiste bestandsnaam." },
+                    { text: "Oeps vergeten. Hier is taak.docx", correct: false, feedback: "Te kort door de bocht en slordige bestandsnaam." }
+                ]
+            }
+        ];
+
+        window.onload = function() {
+            loadProgress();
+            renderBadges();
+            initInbox();
+            initPuzzle();
+            initQuiz();
+            analyzeEmail();
+            updateCertificatePreview();
+        };
+
+        function switchTab(tabId) {
+            // Hide all sections
+            const sections = ['theorie', 'bouwer', 'postvak', 'replyall', 'bestanden', 'matrix', 'puzzel', 'certificaat'];
+            sections.forEach(s => {
+                const el = document.getElementById(`module-${s}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`tab-btn-${s}`);
+                if (btn) btn.classList.remove('active');
+            });
+
+            // Show selected
+            const targetSection = document.getElementById(`module-${tabId}`);
+            if (targetSection) targetSection.classList.remove('hidden');
+            const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+
+        function analyzeEmail() {
+            const aan = document.getElementById('builder-aan').value.trim();
+            const cc = document.getElementById('builder-cc').value.trim();
+            const onderwerp = document.getElementById('builder-onderwerp').value.trim();
+            const aanspreking = document.getElementById('builder-aanspreking').value;
+            const bericht = document.getElementById('builder-bericht').value.trim();
+            const afsluiting = document.getElementById('builder-afsluiting').value;
+            const naam = document.getElementById('builder-naam').value.trim();
+            const klas = document.getElementById('builder-klas').value.trim();
+            const bijlage = document.getElementById('builder-bijlage').value;
+
+            // Update live preview text
+            document.getElementById('prev-aan').textContent = aan || "(Nog leeg)";
+            document.getElementById('prev-cc').textContent = cc || "-";
+            document.getElementById('prev-onderwerp').textContent = onderwerp || "(Geen onderwerp)";
+            
+            const bijlageBox = document.getElementById('prev-attachment-box');
+            if (bijlage !== 'geen') {
+                bijlageBox.classList.remove('hidden');
+                document.getElementById('prev-bijlage-name').textContent = bijlage;
+            } else {
+                bijlageBox.classList.add('hidden');
+            }
+
+            let fullText = "";
+            if (aanspreking) fullText += aanspreking + "\n\n";
+            if (bericht) fullText += bericht + "\n\n";
+            if (afsluiting) fullText += afsluiting + "\n";
+            if (naam) fullText += naam + (klas ? ` (${klas})` : "");
+
+            document.getElementById('prev-body-content').textContent = fullText || "Hier verschijnt je e-mailvoorbeeld zodra je begint met typen...";
+
+            // Score Calculation
+            let score = 0;
+            let warnings = [];
+
+            if (aan.includes('@')) { score += 15; } else { warnings.push("⚠️ Vul een geldig e-mailadres in bij 'Aan'."); }
+
+            if (onderwerp.length > 5) {
+                if (['hallo', 'vraagje', 'hi', 'dringend'].includes(onderwerp.toLowerCase())) {
+                    warnings.push("⚠️ 'Onderwerp' is te vaag. Maak het specifieker.");
+                    score += 5;
+                } else {
+                    score += 20;
+                }
+            } else {
+                warnings.push("⚠️ Vul een duidelijk onderwerp in.");
+            }
+
+            if (aanspreking.includes('Beste') || aanspreking.includes('Geachte')) {
+                score += 15;
+            } else if (aanspreking.length > 0) {
+                warnings.push("⚠️ Gebruik een formelere aanspreking voor leerkrachten.");
+                score += 5;
+            }
+
+            if (afsluiting.includes('vriendelijke groeten') || afsluiting.includes('bedankt')) {
+                score += 15;
+            } else if (afsluiting.length > 0) {
+                warnings.push("⚠️ Kies een beleefde afsluiting.");
+                score += 5;
+            }
+
+            if (bericht.length > 20) {
+                score += 20;
+            } else {
+                warnings.push("⚠️ Je bericht is nog erg kort.");
+            }
+
+            if (naam && klas) { score += 15; } else { warnings.push("⚠️ Vergeet je naam en klas niet in te vullen."); }
+
+            // Check missing attachment keyword warning
+            const bodyLower = bericht.toLowerCase();
+            if ((bodyLower.includes('bijlage') || bodyLower.includes('meegestuurd') || bodyLower.includes('gevoegd')) && bijlage === 'geen') {
+                warnings.push("🚨 JE MOET EEN BIJLAGE TOEVOEGEN! Je vermeldt 'bijlage' in het bericht, maar er is geen bestand gekozen.");
+                score = Math.max(0, score - 20);
+            }
+
+            // Update UI Score
+            const scoreNum = document.getElementById('builder-score-num');
+            const scoreBar = document.getElementById('builder-score-bar');
+            scoreNum.textContent = `${score}%`;
+            scoreBar.style.width = `${score}%`;
+
+            if (score >= 85) {
+                scoreBar.className = "h-3 rounded-full bg-emerald-500 transition-all duration-300";
+            } else if (score >= 50) {
+                scoreBar.className = "h-3 rounded-full bg-amber-500 transition-all duration-300";
+            } else {
+                scoreBar.className = "h-3 rounded-full bg-red-500 transition-all duration-300";
+            }
+
+            const feedbackList = document.getElementById('builder-feedback-list');
+            if (warnings.length === 0 && score >= 85) {
+                feedbackList.innerHTML = `<div class="p-2.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold"><i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i> Uitstekende e-mail! Klaar om te versturen.</div>`;
+            } else {
+                feedbackList.innerHTML = warnings.map(w => `<div class="p-2.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200"><i class="fa-solid fa-circle-exclamation mr-1 text-amber-600"></i> ${w}</div>`).join('');
+            }
+
+            return score;
+        }
+
+        function submitBuilderEmail() {
+            const score = analyzeEmail();
+            if (score >= 85) {
+                APP_STATE.badges.precision = true;
+                saveProgress();
+                showCustomModal("🎯 Badge Ontgrendeld: Precision Pro!", "Gefeliciteerd! Je hebt een uitstekende formele e-mail opgesteld met een score van " + score + "%.");
+            } else {
+                showCustomModal("Aandachtspunt", "Je e-mailscore is momenteel " + score + "%. Verbeter de waarschuwingen om minstens 85% te behalen!");
+            }
+        }
+
+        function initInbox() {
+            const container = document.getElementById('inbox-email-list');
+            container.innerHTML = INBOX_DATA.map((mail, idx) => `
+                <div onclick="selectInboxMail(${idx})" class="p-3.5 hover:bg-slate-100 cursor-pointer transition flex items-center justify-between ${APP_STATE.solvedEmails[idx] ? 'bg-emerald-50/60' : ''}">
+                    <div class="space-y-1">
+                        <div class="font-bold text-xs text-slate-800">${mail.sender}</div>
+                        <div class="text-xs text-slate-600 font-medium truncate max-w-[180px]">${mail.subject}</div>
+                    </div>
+                    <div>
+                        ${APP_STATE.solvedEmails[idx] ? '<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>' : '<i class="fa-solid fa-clock text-slate-300 text-base"></i>'}
+                    </div>
+                </div>
+            `).join('');
+
+            const solvedCount = APP_STATE.solvedEmails.filter(Boolean).length;
+            document.getElementById('inbox-solved-counter').textContent = `${solvedCount} / 4 voltooid`;
+
+            if (solvedCount === 4 && !APP_STATE.badges.inbox) {
+                APP_STATE.badges.inbox = true;
+                saveProgress();
+            }
+        }
+
+        function selectInboxMail(idx) {
+            const mail = INBOX_DATA[idx];
+            const detail = document.getElementById('inbox-mail-detail');
+
+            detail.innerHTML = `
+                <div class="space-y-4">
+                    <div class="border-b pb-3">
+                        <span class="text-xs px-2.5 py-1 rounded-full ${APP_STATE.solvedEmails[idx] ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} font-bold inline-block mb-2">
+                            ${APP_STATE.solvedEmails[idx] ? '✓ Opgetreden/Voltooid' : 'In behandeling'}
+                        </span>
+                        <h3 class="text-lg font-bold text-slate-800">${mail.subject}</h3>
+                        <p class="text-xs text-slate-500">Van: <strong>${mail.sender}</strong> (${mail.email})</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border">
+${mail.body}
+                    </div>
+
+                    <div class="border-t pt-4 space-y-3">
+                        <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">Kies de juiste reactie:</h4>
+                        <div class="space-y-2">
+                            ${mail.options.map((opt, oIdx) => `
+                                <button onclick="answerInboxMail(${idx}, ${oIdx})" class="w-full p-3 text-left border rounded-xl hover:bg-slate-50 text-xs text-slate-700 transition">
+                                    ${opt.text}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerInboxMail(mailIdx, optionIdx) {
+            const opt = INBOX_DATA[mailIdx].options[optionIdx];
+            if (opt.correct) {
+                APP_STATE.solvedEmails[mailIdx] = true;
+                saveProgress();
+                initInbox();
+                selectInboxMail(mailIdx);
+                showCustomModal("Juist antwoord! 🎉", opt.feedback);
+            } else {
+                showCustomModal("Probeer opnieuw", opt.feedback);
+            }
+        }
+
+        function triggerReplyAllChaos(choice) {
+            const container = document.getElementById('replyall-simulation-container');
+            const defaultMsg = document.getElementById('replyall-default-msg');
+            const spamBox = document.getElementById('replyall-spam-box');
+            const stream = document.getElementById('replyall-messages-stream');
+
+            defaultMsg.classList.add('hidden');
+
+            if (choice === 'correct') {
+                spamBox.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="text-center space-y-3 animate-pop py-4">
+                        <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-2xl mx-auto">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-emerald-400 font-bold text-lg">Schone Inbox & Rustige Klas!</h3>
+                        <p class="text-slate-300 text-xs max-w-md mx-auto">
+                            Uitstekende keuze! Je hebt niet op 'Allen Beantwoorden' geklikt. Zo voorkom je dat 180 medeleerlingen overbodige meldingen krijgen.
+                        </p>
+                    </div>
+                `;
+                APP_STATE.badges.privacy = true;
+                saveProgress();
+            } else {
+                spamBox.classList.remove('hidden');
+                stream.innerHTML = "";
+                const names = ["Pieter", "An", "Karel", "Mevr. De Smet", "Sarah", "Lucas", "Lotte", "Milan"];
+                const replies = ["Ik niet hoor!", "Niet van mij!", "Stop met te mailen!", "Gelieve NIET op allen beantwoorden te klikken!", "Van mij ook niet!"];
+
+                let count = 0;
+                const interval = setInterval(() => {
+                    count += 12;
+                    const name = names[Math.floor(Math.random() * names.length)];
+                    const text = replies[Math.floor(Math.random() * replies.length)];
+                    stream.innerHTML = `<div class="p-1.5 bg-red-950/60 border border-red-800 text-red-300 rounded"><i class="fa-solid fa-envelope mr-1"></i> <strong>${name}:</strong> "${text}"</div>` + stream.innerHTML;
+                    
+                    if (count >= 180) {
+                        clearInterval(interval);
+                        APP_STATE.badges.privacy = false;
+                    }
+                }, 150);
+            }
+        }
+
+        function updateFilenameGenerator() {
+            const vak = document.getElementById('fn-vak').value.trim() || 'Vak';
+            const naam = document.getElementById('fn-naam').value.trim() || 'VoornaamNaam';
+            const klas = document.getElementById('fn-klas').value.trim() || 'Klas';
+            const taak = document.getElementById('fn-taak').value.trim() || 'Taak';
+
+            const cleanVak = vak.replace(/\s+/g, '');
+            const cleanNaam = naam.replace(/\s+/g, '');
+            const cleanKlas = klas.replace(/\s+/g, '');
+            const cleanTaak = taak.replace(/\s+/g, '');
+
+            document.getElementById('fn-generated-output').textContent = `${cleanVak}_${cleanNaam}_${cleanKlas}_${cleanTaak}.pdf`;
+        }
+
+        function checkFilenameFix() {
+            const val = document.getElementById('fn-fix-input').value.trim();
+            const feedback = document.getElementById('fn-fix-feedback');
+
+            if (val.toLowerCase() === 'wiskunde_emmapeeters_1b_breuken.pdf') {
+                feedback.innerHTML = `<span class="text-emerald-600 font-bold">✓ Uitstekend! De bestandsnaam voldoet perfect aan de norm.</span>`;
+                APP_STATE.badges.attachment = true;
+                saveProgress();
+            } else {
+                feedback.innerHTML = `<span class="text-red-500 font-bold">✗ Nog niet helemaal. Gebruik exact: Wiskunde_EmmaPeeters_1B_Breuken.pdf</span>`;
+            }
+        }
+
+        function checkMatrixAnswers() {
+            const directieAns = document.getElementById('mat-ans-directie').value;
+            const directieToon = document.getElementById('mat-toon-directie').value;
+            const directieAfs = document.getElementById('mat-afs-directie').value;
+
+            const titularisAns = document.getElementById('mat-ans-titularis').value;
+            const titularisToon = document.getElementById('mat-toon-titularis').value;
+            const titularisAfs = document.getElementById('mat-afs-titularis').value;
+
+            const klasgenootAns = document.getElementById('mat-ans-klasgenoot').value;
+            const klasgenootToon = document.getElementById('mat-toon-klasgenoot').value;
+            const klasgenootAfs = document.getElementById('mat-afs-klasgenoot').value;
+
+            const dOk = directieAns === 'goed' && directieToon === 'goed' && directieAfs === 'goed';
+            const tOk = titularisAns === 'goed' && titularisToon === 'goed' && titularisAfs === 'goed';
+            const kOk = klasgenootAns === 'goed' && klasgenootToon === 'goed' && klasgenootAfs === 'goed';
+
+            document.getElementById('mat-res-directie').innerHTML = dOk ? '✅' : '❌';
+            document.getElementById('mat-res-titularis').innerHTML = tOk ? '✅' : '❌';
+            document.getElementById('mat-res-klasgenoot').innerHTML = kOk ? '✅' : '❌';
+
+            if (dOk && tOk && kOk) {
+                showCustomModal("Matrix Voltooid! 🎚️", "Alle ontvangers zijn gekoppeld aan de juiste toon en aanspreking!");
+            } else {
+                showCustomModal("Aandachtspunt", "Sommige keuzes in de matrix zijn niet gepast. Controleer de rode kruisjes!");
+            }
+        }
+
+        function initPuzzle() {
+            APP_STATE.userPuzzleCurrent = [...APP_STATE.puzzleOrder].sort(() => Math.random() - 0.5);
+            renderPuzzle();
+        }
+
+        function renderPuzzle() {
+            const container = document.getElementById('puzzle-items-container');
+            container.innerHTML = APP_STATE.userPuzzleCurrent.map((item, idx) => `
+                <div class="p-3 bg-slate-50 border rounded-xl flex items-center justify-between text-xs font-semibold">
+                    <span>${idx + 1}. ${item.text}</span>
+                    <div class="space-x-1">
+                        <button onclick="movePuzzle(${idx}, -1)" class="p-1 px-2 bg-slate-200 hover:bg-slate-300 rounded"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="movePuzzle(${idx}, 1)" class="p-1 px-2 bg-slate-200 hover:bg-slate-300 rounded"><i class="fa-solid fa-arrow-down"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function movePuzzle(idx, dir) {
+            const target = idx + dir;
+            if (target < 0 || target >= APP_STATE.userPuzzleCurrent.length) return;
+            const temp = APP_STATE.userPuzzleCurrent[idx];
+            APP_STATE.userPuzzleCurrent[idx] = APP_STATE.userPuzzleCurrent[target];
+            APP_STATE.userPuzzleCurrent[target] = temp;
+            renderPuzzle();
+        }
+
+        function checkPuzzleOrder() {
+            const isCorrect = APP_STATE.userPuzzleCurrent.every((item, idx) => item.id === idx + 1);
+            const feedback = document.getElementById('puzzle-feedback');
+            if (isCorrect) {
+                feedback.className = "text-xs font-semibold text-emerald-600";
+                feedback.textContent = "✓ Perfecte e-mailvolgorde!";
+                checkNetiquetteBadge();
+            } else {
+                feedback.className = "text-xs font-semibold text-red-500";
+                feedback.textContent = "✗ Onjuiste volgorde. Denk aan de logische opbouw van boven naar beneden.";
+            }
+        }
+
+        function initQuiz() {
+            const questions = [
+                { q: "Wanneer gebruik je BCC?", opts: ["Als je iemand wil waarschuwen", "Om e-mailadressen van een grote groep te beschermen", "Voor de directeur"], correct: 1 },
+                { q: "Welk bestandstype is het beste voor een huiswerktaak?", opts: [".pdf", ".docx", ".jpg"], correct: 0 }
+            ];
+
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = questions.map((q, qIdx) => `
+                <div class="space-y-1 border-b pb-3">
+                    <p class="font-bold text-slate-800">${qIdx + 1}. ${q.q}</p>
+                    <div class="space-y-1">
+                        ${q.opts.map((opt, oIdx) => `
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="quiz-q-${qIdx}" value="${oIdx}">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function checkQuizAnswers() {
+            const q0 = document.querySelector('input[name="quiz-q-0"]:checked')?.value;
+            const q1 = document.querySelector('input[name="quiz-q-1"]:checked')?.value;
+
+            if (q0 === "1" && q1 === "0") {
+                document.getElementById('quiz-feedback').innerHTML = `<span class="text-emerald-600 font-bold">✓ 100% correct op de quiz!</span>`;
+                checkNetiquetteBadge();
+            } else {
+                document.getElementById('quiz-feedback').innerHTML = `<span class="text-red-500 font-bold">✗ Niet alle antwoorden zijn juist.</span>`;
+            }
+        }
+
+        function checkNetiquetteBadge() {
+            APP_STATE.badges.netiquette = true;
+            saveProgress();
+        }
+
+        function renderBadges() {
+            const badgeList = [
+                { key: 'privacy', title: 'Privacy Protector', desc: 'Reply All vermeden', icon: 'fa-shield-halved' },
+                { key: 'attachment', title: 'Attachment Ace', desc: 'Bestand correct benoemd', icon: 'fa-paperclip' },
+                { key: 'precision', title: 'Precision Pro', desc: 'E-mail 85%+ score', icon: 'fa-bullseye' },
+                { key: 'inbox', title: 'Inbox Hero', desc: '4 scenario’s opgelost', icon: 'fa-inbox' },
+                { key: 'netiquette', title: 'Netiquette Master', desc: 'Puzzel & Quiz voltooid', icon: 'fa-graduation-cap' }
+            ];
+
+            const shelf = document.getElementById('badges-shelf');
+            let earned = 0;
+
+            shelf.innerHTML = badgeList.map(b => {
+                const unlocked = APP_STATE.badges[b.key];
+                if (unlocked) earned++;
+                return `
+                    <div class="p-4 rounded-xl border ${unlocked ? 'bg-amber-50/50 border-amber-300 text-slate-800' : 'bg-slate-50 border-slate-200 text-slate-400'} text-center space-y-2">
+                        <div class="w-12 h-12 rounded-full ${unlocked ? 'bg-amber-500 text-white shadow-md' : 'bg-slate-200 text-slate-400'} flex items-center justify-center text-xl mx-auto">
+                            <i class="fa-solid ${b.icon}"></i>
+                        </div>
+                        <div class="font-bold text-xs">${b.title}</div>
+                        <p class="text-[10px] text-slate-500">${b.desc}</p>
+                        <span class="text-[10px] font-bold ${unlocked ? 'text-amber-600' : 'text-slate-400'} block">
+                            ${unlocked ? '✓ ONTGRENDELD' : 'VERGRENDELD'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('header-badge-count').textContent = `${earned} / 5`;
+            const pct = Math.round((earned / 5) * 100);
+            document.getElementById('header-progress-bar').style.width = `${pct}%`;
+            document.getElementById('header-progress-text').textContent = `${pct}%`;
+        }
+
+        function updateCertificatePreview() {
+            const name = document.getElementById('cert-input-name').value.trim() || '[ Vul jouw naam in ]';
+            const klas = document.getElementById('cert-input-class').value.trim() || '[ Vul klas in ]';
+
+            document.getElementById('cert-display-name').textContent = name;
+            document.getElementById('cert-display-class').textContent = `Klas: ${klas}`;
+            document.getElementById('cert-display-date').textContent = new Date().toLocaleDateString('nl-BE');
+        }
+
+        function saveProgress() {
+            localStorage.setItem('mailmaster_state', JSON.stringify(APP_STATE));
+            renderBadges();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('mailmaster_state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(APP_STATE, parsed);
+                } catch (e) {
+                    console.error("Fout bij laden van opslag", e);
+                }
+            }
+        }
+
+        function openResetModal() {
+            showCustomModal("Voortgang Wissen?", "Weet je zeker dat je alle behaalde badges wilt wissen?", true);
+        }
+
+        function resetAllProgress() {
+            localStorage.removeItem('mailmaster_state');
+            location.reload();
+        }
+
+        function showCustomModal(title, message, isReset = false) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            const modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+
+            if (isReset) {
+                document.getElementById('modal-icon-bg').className = "w-10 h-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center text-xl";
+                document.getElementById('modal-icon').className = "fa-solid fa-triangle-exclamation";
+                // temporarily attach reset trigger
+                window.modalConfirmAction = resetAllProgress;
+            } else {
+                document.getElementById('modal-icon-bg').className = "w-10 h-10 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl";
+                document.getElementById('modal-icon').className = "fa-solid fa-circle-info";
+                window.modalConfirmAction = null;
+            }
+        }
+
+        function closeCustomModal() {
+            if (window.modalConfirmAction) {
+                window.modalConfirmAction();
+            }
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
